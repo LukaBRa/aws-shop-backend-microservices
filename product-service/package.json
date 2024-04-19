@@ -1,0 +1,15 @@
+{
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "esbuild": "^0.14.25",
+    "serverless-esbuild": "^1.25.0",
+    "ts-jest": "^29.1.2"
+  },
+  "name": "product-service",
+  "scripts": {
+    "test": "jest"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2"
+  }
+}
