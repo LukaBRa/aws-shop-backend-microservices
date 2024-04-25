@@ -5,6 +5,30 @@ provider:
   name: aws
   runtime: nodejs18.x
   region: eu-north-1
+  iamRoleStatements:
+  - Effect: "Allow"
+    Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:eu-north-1:533267095900:table/Products"
+  - Effect: "Allow"
+    Action:
+      - dynamodb:Query
+      - dynamodb:Scan
+      - dynamodb:GetItem
+      - dynamodb:PutItem
+      - dynamodb:UpdateItem
+      - dynamodb:DeleteItem
+    Resource: "arn:aws:dynamodb:eu-north-1:533267095900:table/Stock"
+  environment:
+    AWS_ACCOUNT_REGION: eu-north-1
+    PRODUCT_TABLE_NAME: Products
+    STOCK_TABLE_NAME: Stock
+    FRONT_END_APP: https://shop-react-redux-cloudfront-luka.s3.eu-north-1.amazonaws.com
 
 functions:
   getProductsList:
@@ -23,6 +47,12 @@ functions:
           path: /products/{productId}
     url:
       cors: true
+  createProduct:
+    handler: createProduct/index.createProduct
+    events:
+      - httpApi:
+          method: POST
+          path: /products
 
 plugins:
   - serverless-esbuild

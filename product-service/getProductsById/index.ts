@@ -1,31 +1,34 @@
-import { mockProducts } from "../shared/mock-data";
+import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
+import { response } from "../utils/response";
+import dotenv from "dotenv";
 
-export async function getProductsById(event) {
-    const { productId } = event.pathParameters; 
-    const product = mockProducts.find(product => product.id === productId);
+dotenv.config();
 
-    if (product) {
-        return {
-            statusCode: 200,
-            headers: {
-                'Access-Control-Allow-Origin': 'https://shop-react-redux-cloudfront-luka.s3.eu-north-1.amazonaws.com',
-                'Access-Control-Allow-Credentials': true,
-            },
-            body: JSON.stringify({
-                product: product
-            })
-        };
-    } else {
-        return {
-            statusCode: 404,
-            headers: {
-                'Access-Control-Allow-Origin': 'https://shop-react-redux-cloudfront-luka.s3.eu-north-1.amazonaws.com',
-                'Access-Control-Allow-Credentials': true,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                message: "Product not found."
-            })
-        };
+export async function getProductsById(event) { 
+    
+    try {
+        const { productId } = event.pathParameters;
+        const client = new DynamoDBClient({ region: process.env.AWS_ACCOUNT_REGION });
+        const command = new GetItemCommand({
+            TableName: process.env.PRODUCT_TABLE_NAME,
+            Key: {
+                id: {
+                    "S": productId
+                }
+            }
+        })
+
+        const product = await client.send(command);
+
+        if(product){
+            return response(200, JSON.stringify(product.Item));
+        } else{
+            return response(404, JSON.stringify({ message: "Product not found." }));
+        }
+
+    } catch (err) {
+        console.error("Failed to get product.", err);
+        return response(500, JSON.stringify({ message: "Internal Server Error." }));
     }
+
 }
