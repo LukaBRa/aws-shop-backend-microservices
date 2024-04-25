@@ -19,7 +19,10 @@ export async function getProductList(event) {
     const products = productsResponse.Items?.map((product) => {
       const productStock = stockResponse.Items?.find((stock) => stock.productId == product.id);
       return {
-        ...product,
+        id: product.id.S,
+        title: product.title.S,
+        description: product.description.S,
+        price: product.price.N,
         count: productStock ? productStock.count : 0
       }
     });

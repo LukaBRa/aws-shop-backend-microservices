@@ -21,7 +21,13 @@ export async function getProductsById(event) {
         const product = await client.send(command);
 
         if(product){
-            return response(200, JSON.stringify(product.Item));
+            const responseProduct = {
+                id: product.Item?.id.S,
+                title: product.Item?.title.S,
+                description: product.Item?.description.N,
+                price: product.Item?.price.N
+            }
+            return response(200, JSON.stringify(responseProduct));
         } else{
             return response(404, JSON.stringify({ message: "Product not found." }));
         }
