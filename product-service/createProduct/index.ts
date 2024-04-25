@@ -3,10 +3,13 @@ import { response } from "../utils/response";
 import dotenv from "dotenv";
 import { validateProductBody } from "../utils/validateProductBody";
 import type { IProduct } from "../types/product.type"; 
+import { ProductClient } from "../database/product.client";
 
 dotenv.config();
 
 export async function createProduct(event) { 
+
+    console.log(event);
     
     try {
     
@@ -16,18 +19,7 @@ export async function createProduct(event) {
             return response(400, JSON.stringify({ message: "Invalid product." }));
         }
 
-        const client = new DynamoDBClient({ region: process.env.AWS_ACCOUNT_REGION });
-        const command = new PutItemCommand({
-            TableName: process.env.PRODUCT_TABLE_NAME,
-            Item: {
-                id: { S: id },
-                title: { S: title },
-                description: { S: description },
-                price: { N: price.toString() }
-            }
-        });
-
-        const newProductResponse = await client.send(command);
+        const newProductResponse = await ProductClient.putItemCommand({ id, title, description, price });
 
         return response(200, JSON.stringify(newProductResponse));
 

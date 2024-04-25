@@ -1,31 +1,12 @@
 import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { response } from "../utils/response";
+import { ProductClient } from "../database/product.client";
 
 export async function getProductList(event) {
 
   try {
 
-    const client = new DynamoDBClient({ region: process.env.AWS_ACCOUNT_REGION });
-    const productsCommand = new ScanCommand({
-      TableName: process.env.PRODUCT_TABLE_NAME
-    })
-    const stockCommand = new ScanCommand({
-      TableName: process.env.STOCK_TABLE_NAME
-    })
-
-    const productsResponse = await client.send(productsCommand);
-    const stockResponse = await client.send(stockCommand);
-
-    const products = productsResponse.Items?.map((product) => {
-      const productStock = stockResponse.Items?.find((stock) => stock.productId == product.id);
-      return {
-        id: product.id.S,
-        title: product.title.S,
-        description: product.description.S,
-        price: product.price.N,
-        count: productStock ? productStock.count : 0
-      }
-    });
+    const products = await ProductClient.scanCommand();
     
     return response(200, JSON.stringify(products));
   } catch (err) {

@@ -1,24 +1,18 @@
 import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { response } from "../utils/response";
 import dotenv from "dotenv";
+import { ProductClient } from "../database/product.client";
 
 dotenv.config();
 
 export async function getProductsById(event) { 
     
+    console.log(event);
+
     try {
         const { productId } = event.pathParameters;
-        const client = new DynamoDBClient({ region: process.env.AWS_ACCOUNT_REGION });
-        const command = new GetItemCommand({
-            TableName: process.env.PRODUCT_TABLE_NAME,
-            Key: {
-                id: {
-                    "S": productId
-                }
-            }
-        })
 
-        const product = await client.send(command);
+        const product = await ProductClient.getItemCommand(productId);
 
         if(product){
             const responseProduct = {
