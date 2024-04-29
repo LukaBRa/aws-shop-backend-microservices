@@ -1,16 +1,18 @@
-import { mockProducts } from "../shared/mock-data";
+import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
+import { response } from "../utils/response";
+import { ProductClient } from "../database/product.client";
 
 export async function getProductList(event) {
-  return {
-    statusCode: 200,
-    headers: {
-      'Access-Control-Allow-Origin': 'https://shop-react-redux-cloudfront-luka.s3.eu-north-1.amazonaws.com',
-      'Access-Control-Allow-Credentials': true,
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      products: mockProducts,
-    }),
-  }
-  }
+
+  try {
+
+    const products = await ProductClient.scanCommand();
+    
+    return response(200, JSON.stringify(products));
+  } catch (err) {
+    console.error("Failed to get all products.", err);
+    return response(500, JSON.stringify({ message: "Internal Server Error" }));
+  } 
+  
+}
   
