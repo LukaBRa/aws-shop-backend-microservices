@@ -9,7 +9,9 @@ export async function importProductsFile(event) {
 
     const { name } = event.queryStringParameters;
 
-    console.log(process.env.BUCKET_NAME);
+    if(!name){
+        return response(400, "Invalid file name.");
+    }
 
     try {
 
