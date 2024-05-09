@@ -1,9 +1,6 @@
-import { DynamoDBClient, GetItemCommand } from "@aws-sdk/client-dynamodb";
 import { response } from "../utils/response";
-import dotenv from "dotenv";
 import { ProductClient } from "../database/product.client";
 
-dotenv.config();
 
 export async function getProductsById(event) { 
     

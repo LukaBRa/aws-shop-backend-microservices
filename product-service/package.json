@@ -8,11 +8,13 @@
   },
   "name": "product-service",
   "scripts": {
-    "test": "jest",
+    "test": "jest --setupFiles dotenv/config",
     "db:populate": "cross-env AWS_ACCOUNT_REGION=eu-north-1 PRODUCT_TABLE_NAME=Product node scripts/populateDB.js"
   },
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.556.0",
+    "@aws-sdk/client-sns": "^3.569.0",
+    "@aws-sdk/client-sqs": "^3.569.0",
     "@aws-sdk/lib-dynamodb": "^3.556.0",
     "dotenv": "^16.4.5",
     "ts-node": "^10.9.2"

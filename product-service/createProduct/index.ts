@@ -1,11 +1,8 @@
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { response } from "../utils/response";
-import dotenv from "dotenv";
 import { validateProductBody } from "../utils/validateProductBody";
 import type { IProduct } from "../types/product.type"; 
 import { ProductClient } from "../database/product.client";
 
-dotenv.config();
 
 export async function createProduct(event) { 
 

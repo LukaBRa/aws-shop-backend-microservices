@@ -8,6 +8,7 @@ import type {Config} from 'jest';
 const config: Config = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  setupFiles: ["dotenv/config"],
   // All imported modules in your tests should be mocked automatically
   // automock: false,
 

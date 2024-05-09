@@ -1,4 +1,3 @@
-import { DynamoDBClient, ScanCommand } from "@aws-sdk/client-dynamodb";
 import { response } from "../utils/response";
 import { ProductClient } from "../database/product.client";
 

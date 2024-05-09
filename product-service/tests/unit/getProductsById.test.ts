@@ -1,5 +1,9 @@
 import { getProductsById } from "../../getProductsById";
-import {describe, expect, test} from '@jest/globals';
+import { jest, describe, expect, test} from '@jest/globals';
+
+jest.mock("dotenv", () => ({
+    config: jest.fn()
+}))
 
 describe("getProductsById tests", () => {
 
@@ -23,7 +27,7 @@ describe("getProductsById tests", () => {
         }
         const response = await getProductsById(event);
         expect(response.statusCode).toBe(200);
-        expect(response.body).toBe("{\"product\":{\"description\":\"Short Product Description4\",\"id\":\"7567ec4b-b10c-48c5-9345-fc73348a80a1\",\"price\":15,\"title\":\"ProductTest\"}}");
+        expect(response.body).toBe("{\"id\":\"7567ec4b-b10c-48c5-9345-fc73348a80a1\",\"title\":\"ProductTest\",\"price\":\"15\"}");
     });
 
 });

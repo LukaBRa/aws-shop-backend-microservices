@@ -24,6 +24,10 @@ provider:
       - dynamodb:UpdateItem
       - dynamodb:DeleteItem
     Resource: "arn:aws:dynamodb:eu-north-1:533267095900:table/Stock"
+  - Effect: "Allow"
+    Action:
+      - sns:Publish
+    Resource: "arn:aws:sns:eu-north-1:533267095900:createProductTopic"
   environment:
     AWS_ACCOUNT_REGION: eu-north-1
     PRODUCT_TABLE_NAME: Products
@@ -53,6 +57,34 @@ functions:
       - httpApi:
           method: POST
           path: /products
+  catalogBatchProcess:
+    handler: catalogBatchProcess/index.handler
+    events:
+      - sqs:
+          arn:
+            Fn::GetAtt:
+              - catalogItemsQueue
+              - Arn
+
+resources:
+  Resources:
+    catalogItemsQueue:
+      Type: "AWS::SQS::Queue"
+      Properties:
+        QueueName: "catalogItemsQueue"
+    createProductTopic:
+      Type: AWS::SNS::Topic
+      Properties:
+        TopicName: createProductTopic
+
+    productEmailSubscription:
+      Type: AWS::SNS::Subscription
+      Properties:
+        Protocol: email
+        TopicArn:
+          Ref: createProductTopic
+        Endpoint: banovicluka10@gmail.com
+
 
 plugins:
   - serverless-esbuild
